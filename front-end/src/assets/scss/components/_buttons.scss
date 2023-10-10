@@ -1,0 +1,22 @@
+.sidebar-btn {
+    border: none;
+    background-color: $color-003;
+    border-radius: 5px;
+    width: 64px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    
+    &:hover {
+        background-color: $color-001;
+        svg {
+            * {
+                fill: $color-003;
+            }
+        }
+    }
+}

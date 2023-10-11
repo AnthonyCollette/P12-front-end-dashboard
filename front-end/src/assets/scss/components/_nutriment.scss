@@ -1,0 +1,19 @@
+.nutriment {
+    display: flex;
+    align-items: center;
+    padding: 30px 50px 30px 30px;
+    background-color: $color-004;
+    border-radius: 10px;
+    width: 260px;
+    margin-bottom: 40px;
+    &:last-of-type {
+        margin-bottom: 0;
+    }
+    &__image {
+        padding: 20px;
+        border-radius: 10px;
+    }
+    &__text {
+        margin-left: 25px;
+    }
+}

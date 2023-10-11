@@ -17,7 +17,7 @@ const Sidebar = () => {
     return (
         <aside>
             <section>
-                {iconsSvg.map(item => <SidebarButton image={item} />)}
+                {iconsSvg.map((item, index) => <SidebarButton key={index} image={item} />)}
             </section>
             <p>
                 Copyright, SportSee 2020

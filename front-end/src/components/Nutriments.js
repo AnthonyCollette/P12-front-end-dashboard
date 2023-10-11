@@ -2,8 +2,6 @@ import React from 'react';
 
 const Nutriments = ({ text, title, image, color }) => {
 
-    console.log(color)
-
     return (
         <article className='nutriment'>
             <div className={'nutriment__image ' + color}>

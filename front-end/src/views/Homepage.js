@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Nutriments from '../components/Nutriments';
+import Chart from '../components/Chart';
+import mockedData from './../data/data';
+import { useParams } from 'react-router-dom';
 
-const Homepage = () => {
+const Homepage = ({ mocked }) => {
 
     const nutriments = [{
         text: "1,930kCal", title: "Calories", image: <svg width="17" height="20" viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,21 +30,40 @@ const Homepage = () => {
         </svg>, color: "pink"
     }]
 
+    const { id } = useParams()
+
+    const [data, setData] = useState('')
+    const [user, setUser] = useState('')
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        if (mocked) {
+            setData(mockedData)
+            setData((state) => {
+                setUser(state.USER_MAIN_DATA.find(user => user.id == id))
+            })
+        }
+    }, [])
+
+    useEffect(() => {
+        setLoading(false)
+    }, [user])
+
     return (
         <div className='homepage'>
             <Header />
             <Sidebar />
             <div className='container'>
-                <h1>Bonjour <span>Thomas</span></h1>
+                {!loading && <h1>Bonjour <span>{user?.userInfos?.firstName}</span></h1>}
                 <h2>Félicitation ! Vous avez explosé vos objectifs hier 👏</h2>
-                <div className='row'>
+                {/* <div className='row'>
                     <div className='charts'>
-
+                        <Chart />
                     </div>
                     <section className='nutriments'>
-                        {nutriments.map(nutriment => <Nutriments text={nutriment.text} title={nutriment.title} image={nutriment.image} color={nutriment.color} />)}
+                        {nutriments.map((nutriment, index) => <Nutriments key={index} text={nutriment.text} title={nutriment.title} image={nutriment.image} color={nutriment.color} />)}
                     </section>
-                </div>
+                </div> */}
             </div>
         </div>
     );

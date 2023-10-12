@@ -4,7 +4,7 @@
     padding: 30px 50px 30px 30px;
     background-color: $color-004;
     border-radius: 10px;
-    width: 260px;
+    width: 200px;
     margin-bottom: 40px;
     &:last-of-type {
         margin-bottom: 0;
@@ -15,5 +15,25 @@
     }
     &__text {
         margin-left: 25px;
+    }
+    &--red {
+        .nutriment__image {
+            background-color: rgba(255, 0, 0, 0.1);
+        }
+    }
+    &--blue {
+        .nutriment__image {
+            background-color: rgba(74, 184, 255, 0.1);
+        }
+    }
+    &--yellow {
+        .nutriment__image {
+            background-color: rgba(249, 206, 35, 0.1);
+        }
+    }
+    &--pink {
+        .nutriment__image {
+            background-color: rgba(253, 81, 129, 0.1);
+        }
     }
 }

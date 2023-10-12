@@ -33,37 +33,47 @@ const Homepage = ({ mocked }) => {
     const { id } = useParams()
 
     const [data, setData] = useState('')
-    const [user, setUser] = useState('')
+    const [userMainData, setUserMainData] = useState(null)
+    const [userActivity, setUserActivity] = useState('')
+    const [userAverageSessions, setAverageSessions] = useState('')
+    const [userPerformance, setUserPerformance] = useState('')
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         if (mocked) {
             setData(mockedData)
             setData((state) => {
-                setUser(state.USER_MAIN_DATA.find(user => user.id == id))
+                setUserMainData(state.USER_MAIN_DATA.find(user => user.id == id))
+                setUserActivity(state.USER_ACTIVITY.find(user => user.id == id))
+                setAverageSessions(state.USER_AVERAGE_SESSIONS.find(user => user.id == id))
+                setUserPerformance(state.USER_PERFORMANCE.find(user => user.id == id))
             })
         }
     }, [])
 
     useEffect(() => {
-        setLoading(false)
-    }, [user])
+        if (userMainData !== null) {
+            setLoading(false)
+        }
+    }, [userMainData])
 
     return (
         <div className='homepage'>
             <Header />
             <Sidebar />
             <div className='container'>
-                {!loading && <h1>Bonjour <span>{user?.userInfos?.firstName}</span></h1>}
+                {!loading && <h1>Bonjour <span>{userMainData?.userInfos?.firstName}</span></h1>}
                 <h2>Félicitation ! Vous avez explosé vos objectifs hier 👏</h2>
-                {/* <div className='row'>
-                    <div className='charts'>
+                <div className='row'>
+                    {/* <div className='charts'>
                         <Chart />
-                    </div>
+                    </div> */}
                     <section className='nutriments'>
-                        {nutriments.map((nutriment, index) => <Nutriments key={index} text={nutriment.text} title={nutriment.title} image={nutriment.image} color={nutriment.color} />)}
+                        {!loading && userMainData !== null ? Object.entries(userMainData?.keyData).map(([key, value], index) => {
+                            return <Nutriments key={index} index={index} label={key} value={value} />
+                        }) : ''}
                     </section>
-                </div> */}
+                </div>
             </div>
         </div>
     );

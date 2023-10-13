@@ -1,5 +1,6 @@
 .charts {
     width: fit-content;
+    margin-right: 30px;
 
     .bar-chart {
         max-width: 100%;
@@ -8,9 +9,10 @@
         padding-top: 80px;
         background-color: $color-004;
         position: relative;
+        padding-left: 30px;
         h3 {
             position: absolute;
-            left: 0;
+            left: 30px;
             top: 30px;
         }
     }

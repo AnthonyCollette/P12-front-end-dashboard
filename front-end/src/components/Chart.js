@@ -6,11 +6,26 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 const Chart = ({ typeOfChart, sessions }) => {
 
     const [data, setData] = useState([sessions])
+    let allKg = []
+    let YAxisMin = null
+    let YAxisMax = null
+
+
 
     useEffect(() => {
         sessions.map((session, index) => {
             setData(state => [...state, { name: index, day: session.day, kg: session.kilogram, Kcal: session.calories }])
         })
+        let minBar = (sessions) => {
+            
+            sessions.map((session) => {
+                allKg.push(session.kilogram)
+            })
+            allKg.sort((a, b) => a - b)
+            YAxisMin = allKg[0] - 1
+            YAxisMax = allKg[allKg.length - 1]
+        }
+        minBar(sessions)
     }, [])
 
     const displayChart = (typeOfChart) => {
@@ -26,7 +41,7 @@ const Chart = ({ typeOfChart, sessions }) => {
                             >
                                 <CartesianGrid strokeDasharray="2" vertical={false} />
                                 <XAxis dataKey="name" tick={{ fill: '#9B9EAC', fontSize: '14px', fontWeight: 500 }} />
-                                <YAxis orientation='right' interval={1} tick={{ fill: '#9B9EAC', fontSize: '14px', fontWeight: 500 }} />
+                                <YAxis orientation='right' interval={1} tick={{ fill: '#9B9EAC', fontSize: '14px', fontWeight: 500 }} domain={[75, YAxisMax]} />
                                 <Tooltip content={<CustomTooltip />} />
                                 <Legend iconType='circle' verticalAlign='top' iconSize={8} fontSize={14} wrapperStyle={{ top: "-50px", fontSize: "14px", fontWeight: 500 }} align='right' formatter={(value, entry, index) => <span className="grey-text">{value}</span>} />
                                 <Bar name='Poids (kg)' dataKey="kg" fill="#282D30" radius={[5, 5, 0, 0]} barSize={7} />

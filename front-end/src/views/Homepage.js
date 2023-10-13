@@ -32,30 +32,40 @@ const Homepage = ({ mocked }) => {
 
     const { id } = useParams()
 
-    const [data, setData] = useState('')
+    const [data, setData] = useState(null)
     const [userMainData, setUserMainData] = useState(null)
-    const [userActivity, setUserActivity] = useState('')
-    const [userAverageSessions, setAverageSessions] = useState('')
-    const [userPerformance, setUserPerformance] = useState('')
+    const [userActivity, setUserActivity] = useState(null)
+    const [userAverageSessions, setAverageSessions] = useState(null)
+    const [userPerformance, setUserPerformance] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         if (mocked) {
             setData(mockedData)
-            setData((state) => {
-                setUserMainData(state.USER_MAIN_DATA.find(user => user.id == id))
-                setUserActivity(state.USER_ACTIVITY.find(user => user.id == id))
-                setAverageSessions(state.USER_AVERAGE_SESSIONS.find(user => user.id == id))
-                setUserPerformance(state.USER_PERFORMANCE.find(user => user.id == id))
-            })
+            // setData((state) => {
+            //     setUserMainData(state.USER_MAIN_DATA.find(user => user.id == id))
+            //     setUserActivity(state.USER_ACTIVITY.find(user => user.id == id))
+            //     setAverageSessions(state.USER_AVERAGE_SESSIONS.find(user => user.id == id))
+            //     setUserPerformance(state.USER_PERFORMANCE.find(user => user.id == id))
+            // })
         }
     }, [])
 
+
     useEffect(() => {
-        if (userMainData !== null) {
-            setLoading(false)
+        if (data !== null) {
+            Promise.all([setUserMainData(data.USER_MAIN_DATA.find(user => user.id == id)), 
+                setUserActivity(data.USER_ACTIVITY.find(user => user.id == id), 
+                setAverageSessions(data.USER_AVERAGE_SESSIONS.find(user => user.id == id)), 
+                setUserPerformance(data.USER_PERFORMANCE.find(user => user.id == id)))]).then((res) => console.log(res))
         }
-    }, [userMainData])
+    }, [data])
+
+    useEffect(() => {
+        if (!loading) {
+            console.log(data, userActivity, userAverageSessions, userPerformance)
+        }
+    }, [loading])
 
     return (
         <div className='homepage'>
@@ -65,9 +75,9 @@ const Homepage = ({ mocked }) => {
                 {!loading && <h1>Bonjour <span>{userMainData?.userInfos?.firstName}</span></h1>}
                 <h2>Félicitation ! Vous avez explosé vos objectifs hier 👏</h2>
                 <div className='row'>
-                    {/* <div className='charts'>
-                        <Chart />
-                    </div> */}
+                    <div className='charts'>
+                        <Chart typeOfChart='bar' />
+                    </div>
                     <section className='nutriments'>
                         {!loading && userMainData !== null ? Object.entries(userMainData?.keyData).map(([key, value], index) => {
                             return <Nutriments key={index} index={index} label={key} value={value} />

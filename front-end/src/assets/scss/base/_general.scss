@@ -10,3 +10,8 @@ a {
 .container {
     padding: 70px 90px 90px 225px;
 }
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}

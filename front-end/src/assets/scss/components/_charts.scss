@@ -1,0 +1,31 @@
+.charts {
+    width: fit-content;
+
+    .bar-chart {
+        max-width: 100%;
+        width: 835px;
+        aspect-ratio: 2.60;
+        padding-top: 80px;
+        background-color: $color-004;
+        position: relative;
+        h3 {
+            position: absolute;
+            left: 0;
+            top: 30px;
+        }
+    }
+    .custom-tooltip__activity {
+        background-color: $color-001;
+        color: $color-003;
+        font-family: $font-001;
+        font-size: $font-xs;
+        padding: 10px;
+        p:first-of-type {
+            margin-bottom: 10px;
+        }
+    }
+
+    .grey-text {
+        color: $color-005;
+    }
+}

@@ -33,55 +33,47 @@ const Homepage = ({ mocked }) => {
     const { id } = useParams()
 
     const [data, setData] = useState(null)
-    const [userMainData, setUserMainData] = useState(null)
-    const [userActivity, setUserActivity] = useState(null)
-    const [userAverageSessions, setAverageSessions] = useState(null)
-    const [userPerformance, setUserPerformance] = useState(null)
+    const [userData, setUserData] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         if (mocked) {
             setData(mockedData)
-            // setData((state) => {
-            //     setUserMainData(state.USER_MAIN_DATA.find(user => user.id == id))
-            //     setUserActivity(state.USER_ACTIVITY.find(user => user.id == id))
-            //     setAverageSessions(state.USER_AVERAGE_SESSIONS.find(user => user.id == id))
-            //     setUserPerformance(state.USER_PERFORMANCE.find(user => user.id == id))
-            // })
         }
     }, [])
 
-
     useEffect(() => {
-        if (data !== null) {
-            Promise.all([setUserMainData(data.USER_MAIN_DATA.find(user => user.id == id)), 
-                setUserActivity(data.USER_ACTIVITY.find(user => user.id == id), 
-                setAverageSessions(data.USER_AVERAGE_SESSIONS.find(user => user.id == id)), 
-                setUserPerformance(data.USER_PERFORMANCE.find(user => user.id == id)))]).then((res) => console.log(res))
+        if (data !== null && data !== undefined) {
+            const mainData = data.USER_MAIN_DATA.find(user => user.id == id)
+            const activity = data.USER_ACTIVITY.find(user => user.userId == id)
+            const averageSessions = data.USER_AVERAGE_SESSIONS.find(user => user.userId == id)
+            const performance = data.USER_PERFORMANCE.find(user => user.userId == id)
+            setUserData({mainData, activity, averageSessions, performance})
         }
     }, [data])
 
     useEffect(() => {
-        if (!loading) {
-            console.log(data, userActivity, userAverageSessions, userPerformance)
+        if (userData !== null && userData!== undefined) {
+            console.log(userData)
+            setLoading(false)
         }
-    }, [loading])
+    }, [userData])
 
     return (
         <div className='homepage'>
             <Header />
             <Sidebar />
             <div className='container'>
-                {!loading && <h1>Bonjour <span>{userMainData?.userInfos?.firstName}</span></h1>}
+                {!loading && <h1>Bonjour <span>{userData?.mainData?.userInfos?.firstName}</span></h1>}
                 <h2>Félicitation ! Vous avez explosé vos objectifs hier 👏</h2>
                 <div className='row'>
                     <div className='charts'>
-                        <Chart typeOfChart='bar' />
+                        {!loading && <Chart typeOfChart='bar' sessions={userData?.activity?.sessions} />}
                     </div>
                     <section className='nutriments'>
-                        {!loading && userMainData !== null ? Object.entries(userMainData?.keyData).map(([key, value], index) => {
+                        {!loading &&  Object.entries(userData?.mainData?.keyData).map(([key, value], index) => {
                             return <Nutriments key={index} index={index} label={key} value={value} />
-                        }) : ''}
+                        })}
                     </section>
                 </div>
             </div>

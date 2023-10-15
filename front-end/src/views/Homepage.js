@@ -1,90 +1,78 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import Nutriments from '../components/Nutriments';
-import Chart from '../components/Chart';
-import mockedData from './../data/data';
-import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-const Homepage = ({ mocked }) => {
+const Homepage = ({mocked, setMocked}) => {
 
-    const nutriments = [{
-        text: "1,930kCal", title: "Calories", image: <svg width="17" height="20" viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10.905 7.86625C10.905 7.86625 11.8375 2.38125 8.03249 0C7.91784 1.90607 6.99682 3.6731 5.49999 4.85875C3.87499 6.2875 0.81874 9.5 0.85124 12.925C0.827424 15.9116 2.49913 18.6534 5.16499 20C5.25931 18.6645 5.88737 17.4233 6.90749 16.5562C7.77187 15.8915 8.33304 14.9074 8.46499 13.825C10.7407 15.0348 12.2125 17.3521 12.34 19.9263V19.9425C14.8552 18.7904 16.5109 16.3241 16.625 13.56C16.895 10.3425 15.1325 5.9675 13.5687 4.5375C12.9784 5.85556 12.0615 7.00126 10.905 7.86625Z" fill="#FF0000" />
-        </svg>, color: "red"
-    }, {
-        text: "155g", title: "Proteines", image: <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18.2353 2.47058C17.8824 2.11764 17.4118 1.88234 17.0588 1.88234C16.9412 1.41176 16.8235 1.05881 16.4706 0.705873C15.6471 -0.117656 14.2353 -0.117656 13.4118 0.705873C12.7059 1.41176 12.5882 2.58823 13.1765 3.41176L10.5882 5.88234L9.29412 4.58823L6.70588 7.17646C6.47059 7.05881 6.11765 7.05881 5.88235 7.05881C2.58824 7.05881 0 9.64705 0 12.9412C0 16.2353 2.58824 18.8235 5.88235 18.8235C9.17647 18.8235 11.7647 16.2353 11.7647 12.9412C11.7647 12.7059 11.7647 12.3529 11.6471 12.1176L14.2353 9.5294L12.9412 8.23528L15.4118 5.7647C16.2353 6.35293 17.4118 6.23529 18.1176 5.5294C19.0588 4.70587 19.0588 3.29411 18.2353 2.47058Z" fill="#4AB8FF" />
-        </svg>, color: "blue"
-    }, {
-        text: '290g', title: "Glucides", image: <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16.6575 15.1C16.225 16.0575 16.0187 16.485 15.4612 17.3313C14.685 18.5125 13.5912 19.985 12.235 19.9975C11.03 20.0088 10.72 19.2138 9.08499 19.2225C7.44999 19.2313 7.10749 20.0113 5.90249 20C4.54624 19.9875 3.50999 18.6588 2.73249 17.4763C0.562489 14.1713 0.334989 10.2938 1.67374 8.2325C2.62499 6.76625 4.12624 5.91 5.53874 5.91C6.97624 5.91 7.87874 6.6975 9.06749 6.6975C10.22 6.6975 10.9225 5.90875 12.585 5.90875C13.8412 5.90875 15.1725 6.5925 16.12 7.77375C13.0137 9.4775 13.5187 13.9138 16.6575 15.1Z" fill="#FDCC0C" />
-            <path d="M1.84285 15.1C2.27535 16.0575 2.4816 16.485 3.0391 17.3313C3.81535 18.5125 4.9091 19.985 6.26535 19.9975C7.47035 20.0088 7.78035 19.2138 9.41535 19.2225C11.0503 19.2313 11.3928 20.0113 12.5978 20C13.9541 19.9875 14.9903 18.6588 15.7678 17.4763C17.9378 14.1713 18.1653 10.2938 16.8266 8.2325C15.8753 6.76625 14.3741 5.91 12.9616 5.91C11.5241 5.91 10.6216 6.6975 9.43285 6.6975C8.28035 6.6975 7.57785 5.90875 5.91535 5.90875C4.6591 5.90875 3.32785 6.5925 2.38035 7.77375C5.4866 9.4775 4.9816 13.9138 1.84285 15.1Z" fill="#FDCC0C" />
-            <path d="M12.005 3.37375C12.6875 2.49875 13.205 1.2625 13.0162 0C11.9025 0.07625 10.6 0.785 9.83873 1.70875C9.14873 2.5475 8.57873 3.79125 8.79998 5C10.0162 5.0375 11.2737 4.31125 12.005 3.37375Z" fill="#FDCC0C" />
-        </svg>, color: "yellow"
-    }, {
-        text: "50g", title: "Lipides", image: <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1.25 15C1.25 17.125 2.875 18.75 5 18.75H15C17.125 18.75 18.75 17.125 18.75 15H1.25Z" fill="#FD5181" />
-            <path d="M18.75 12.5H1.25C0.5 12.5 0 12 0 11.25C0 10.5 0.5 10 1.25 10H18.75C19.5 10 20 10.5 20 11.25C20 12 19.5 12.5 18.75 12.5Z" fill="#FD5181" />
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.25 0H8.75C4.625 0 1.25 3.375 1.25 7.5H18.75C18.75 3.375 15.375 0 11.25 0ZM7.5 5C6.75 5 6.25 4.5 6.25 3.75C6.25 3 6.75 2.5 7.5 2.5C8.25 2.5 8.75 3 8.75 3.75C8.75 4.5 8.25 5 7.5 5ZM12.5 5C12.5 5.75 13 6.25 13.75 6.25C14.5 6.25 15 5.75 15 5C15 4.25 14.5 3.75 13.75 3.75C13 3.75 12.5 4.25 12.5 5Z" fill="#FD5181" />
-        </svg>, color: "pink"
-    }]
+    const [firstUserData, setFirstUserData] = useState(null);
+    const [secondUserData, setSecondUserData] = useState(null);
 
-    const { id } = useParams()
+    const handleDataClick = (data) => {
+        if (data === 'api') {
+            setMocked(false);
+        }
+        if (data === 'locales') {
+            setMocked(true);
+        }
+    }
 
-    const [data, setData] = useState(null)
-    const [userData, setUserData] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const displaySelectedData = () => {
+        if (mocked !== null) {
+            if (mocked === true) {
+                return <h3>Vous avez choisi <span>les données locales !</span></h3>
+            }
+            if (mocked === false) {
+                return <h3>Vous avez choisi <span>les données de l'API !</span></h3>
+            }
+        }
+    }
 
+    const displaySelectUser = () => {
+        if (mocked !== null) {
+            if (mocked === true) {
+                return <>
+                    <h2>Merci de choisir un utilisateur</h2>
+                    <Link to="/user/12">Karl Mocked</Link>
+                    <Link to="/user/18">Mocky Ratorez</Link>
+                </>
+            }
+            if (mocked === false && firstUserData !== null && secondUserData !== null) {
+                return <>
+                    <h2>Merci de choisir un utilisateur</h2>
+                    <Link to="/user/12">{firstUserData?.userInfos?.firstName} {firstUserData?.userInfos?.lastName}</Link>
+                    <Link to="/user/18">{secondUserData?.userInfos?.firstName} {secondUserData?.userInfos?.lastName}</Link>
+                </>
+            }
+        }
+    }
+
+    const getFirstUserData = () => {
+        axios.get('http://localhost:3000/user/12').then((res) => setFirstUserData(res.data.data))
+        axios.get('http://localhost:3000/user/18').then((res) => setSecondUserData(res.data.data))
+    }
 
     useEffect(() => {
-        if (mocked) {
-            setData(mockedData)
-        }
+        getFirstUserData()
     }, [])
-
-    useEffect(() => {
-        if (data !== null && data !== undefined) {
-            const mainData = data.USER_MAIN_DATA.find(user => user.id == id)
-            const activity = data.USER_ACTIVITY.find(user => user.userId == id)
-            const averageSessions = data.USER_AVERAGE_SESSIONS.find(user => user.userId == id)
-            const performance = data.USER_PERFORMANCE.find(user => user.userId == id)
-            setUserData({ mainData, activity, averageSessions, performance })
-        }
-    }, [data])
-
-    useEffect(() => {
-        if (userData !== null && userData !== undefined) {
-            setLoading(false)
-        }
-        console.log(userData)
-    }, [userData])
 
     return (
         <div className='homepage'>
             <Header />
             <Sidebar />
-            <div className='container'>
-                {!loading && <h1>Bonjour <span>{userData?.mainData?.userInfos?.firstName}</span></h1>}
-                <h2>Félicitation ! Vous avez explosé vos objectifs hier 👏</h2>
-                <div className='row'>
-                    {!loading && <section className='charts'>
-                        <div className='upper-chart'>
-                            <Chart typeOfChart='bar' content={userData?.activity?.sessions} />
-                        </div>
-                        <div className='lower-charts'>
-                            <Chart typeOfChart="line" content={userData?.averageSessions?.sessions} />
-                            <Chart typeOfChart="radar" content={userData?.performance} />
-                            <Chart typeOfChart="pie" content={userData?.mainData} />
-                        </div>
-                    </section>}
-                    <section className='nutriments'>
-                        {!loading && Object.entries(userData?.mainData?.keyData).map(([key, value], index) => {
-                            return <Nutriments key={index} index={index} label={key} value={value} />
-                        })}
-                    </section>
+            <main>
+                <h1>Bonjour !</h1>
+                <div className='data-selector'>
+                    <h2>Souhaitez-vous les données de l'Api ou les données locales ?</h2>
+                    <button onClick={() => handleDataClick('api')}>API</button>
+                    <button onClick={() => handleDataClick('locales')} >Locales</button>
+                    {displaySelectedData()}
                 </div>
-            </div>
+                <div className='user-selector'>
+                    {displaySelectUser()}
+                </div>
+            </main>
         </div>
     );
 };

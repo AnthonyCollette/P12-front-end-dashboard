@@ -1,16 +1,20 @@
 import './assets/scss/main.scss';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Homepage from './views/Homepage'
+import { useState } from 'react';
+import { BrowserRouter, Route, Routes} from 'react-router-dom';
+import Dashboard from './views/Dashboard'
+import Homepage from './views/Homepage';
 
 function App() {
 
-  const mocked = true;
+
+  const [mocked, setMocked] = useState(null);
 
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path='/user/:id' element={<Homepage mocked={mocked}/>} />
+          <Route path='/' element={<Homepage mocked={mocked} setMocked={setMocked} />} />
+          <Route path='/user/:id' element={<Dashboard mocked={mocked} />} />
         </Routes>
       </BrowserRouter>
     </div>

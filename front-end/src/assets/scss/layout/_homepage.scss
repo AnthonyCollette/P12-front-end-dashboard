@@ -1,0 +1,45 @@
+.homepage {
+    main {
+        padding: 40px 0 0 180px;
+
+        button,
+        a {
+            background-color: $color-001;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid $color-001;
+            color: $color-003;
+            font-family: $font-001;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .2s ease-in-out;
+            margin-right: 20px;
+
+            &:hover {
+                color: $color-001;
+                background-color: $color-003;
+                border-color: $color-001;
+            }
+        }
+    }
+
+    h2 {
+        margin: 30px 0 20px;
+    }
+
+    .data-selector {
+        h3 {
+            margin-top: 20px;
+
+            span {
+                color: $color-008;
+            }
+        }
+    }
+
+    .user-selector {
+        h2 {
+            margin-bottom: 40px;
+        }
+    }
+}

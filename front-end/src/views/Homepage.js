@@ -57,11 +57,8 @@ const Homepage = ({ mocked }) => {
         if (userData !== null && userData !== undefined) {
             setLoading(false)
         }
+        console.log(userData)
     }, [userData])
-
-    let displayHi = () => {
-        return null
-    }
 
     return (
         <div className='homepage'>
@@ -72,9 +69,14 @@ const Homepage = ({ mocked }) => {
                 <h2>Félicitation ! Vous avez explosé vos objectifs hier 👏</h2>
                 <div className='row'>
                     {!loading && <section className='charts'>
-                        <Chart typeOfChart='bar' sessions={userData?.activity?.sessions} />
-                        <Chart typeOfChart="line" sessions={userData?.averageSessions?.sessions} />
-                        <Chart typeOfChart="radar" sessions={userData?.performance} />
+                        <div className='upper-chart'>
+                            <Chart typeOfChart='bar' content={userData?.activity?.sessions} />
+                        </div>
+                        <div className='lower-charts'>
+                            <Chart typeOfChart="line" content={userData?.averageSessions?.sessions} />
+                            <Chart typeOfChart="radar" content={userData?.performance} />
+                            <Chart typeOfChart="pie" content={userData?.mainData} />
+                        </div>
                     </section>}
                     <section className='nutriments'>
                         {!loading && Object.entries(userData?.mainData?.keyData).map(([key, value], index) => {

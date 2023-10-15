@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Line, LineChart, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Line, LineChart, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, PieChart, Pie, Cell } from 'recharts';
 
 
 
-const Chart = ({ typeOfChart, sessions }) => {
+const Chart = ({ typeOfChart, content }) => {
 
     const [data, setData] = useState([])
     const [isLoading, setIsLoading] = useState(true)
@@ -16,12 +16,12 @@ const Chart = ({ typeOfChart, sessions }) => {
 
     useEffect(() => {
         if (typeOfChart === 'bar') {
-            sessions.map((session, index) => {
+            content.map((session, index) => {
                 setData(state => [...state, { name: index, day: session.day, kg: session.kilogram, Kcal: session.calories }])
             })
         }
         if (typeOfChart === 'line') {
-            sessions.map((session) => {
+            content.map((session) => {
                 const day = (day) => {
                     switch (day) {
                         case 1:
@@ -64,15 +64,26 @@ const Chart = ({ typeOfChart, sessions }) => {
                         break;
                 }
             }
-            sessions.data.map((session) => {
+            content.data.map((session) => {
                 setData(state => [...state, { value: session.value, kind: getKind(session.kind) }])
             })
+        }
+        if (typeOfChart === 'pie') {
+            if (content.score !== undefined) {
+                setData([{ value: content.score * 100, fill: '#FF0101' }, { value: 100 - content.score * 100, fill: '#FFFFFF' }])
+            }
+            if (content.todayScore !== undefined) {
+                setData([{ value: content.todayScore * 100, fill: '#FF0101' }, { value: 100 - content.todayScore * 100, fill: '#FFFFFF' }])
+            }
+            
+            
         }
     }, [])
 
     useEffect(() => {
+
         if (typeOfChart === 'bar') {
-            sessions.map((session) => {
+            content.map((session) => {
                 allKg.push(session.kilogram)
             })
             allKg.sort((a, b) => a - b)
@@ -80,10 +91,13 @@ const Chart = ({ typeOfChart, sessions }) => {
             setYAxisMax(allKg[allKg.length - 1])
             setIsLoading(false)
         }
-        console.log(data.length)
+
         if (typeOfChart === 'radar' && data.length > 0) {
             displayRadar = () => <Radar dataKey='value' stroke='#FF0101' fill='#FF0101' fillOpacity={0.7} />
+            setIsLoading(false)
+        }
 
+        if (typeOfChart === 'pie' && data.length > 0) {
             setIsLoading(false)
         }
 
@@ -95,7 +109,7 @@ const Chart = ({ typeOfChart, sessions }) => {
                 return (
                     <article className='bar-chart'>
                         <h3>Activité quotidienne</h3>
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="80%">
                             <BarChart
                                 data={data}
 
@@ -116,7 +130,7 @@ const Chart = ({ typeOfChart, sessions }) => {
                 return (
                     <article className='line-chart'>
                         <h3>Durée moyenne des sessions</h3>
-                        <LineChart width={260} height={260} data={data} margin={{ top: 20, right: 20, left: 20, bottom: 0 }} onMouseMove={(e) => {
+                        <LineChart width={260} height={160} data={data} margin={{ top: 20, right: 20, left: 20, bottom: 0 }} onMouseMove={(e) => {
                             if (e.isTooltipActive === true) {
                                 let windowWidth = document.querySelector('.line-chart').clientWidth
                                 let mouseXpercentage = Math.round(
@@ -128,19 +142,40 @@ const Chart = ({ typeOfChart, sessions }) => {
                             <XAxis dataKey="name" tick={{ fontSize: "12px", fontWeight: 500, fill: "#fff" }} tickLine={false} axisLine={false} />
                             <YAxis hide />
                             <Tooltip content={<CustomTooltip />} />
-                            <Line type="monotone" dataKey="min" stroke="#fff" dot={false} activeDot={{ stroke: "rgba(255,255,255, 0.6)", strokeWidth: 10, r: 5 }} />
+                            <Line type="monotone" dataKey="min" stroke="#fff" dot={false} activeDot={{ stroke: "rgba(255,255,255, 0.6)", strokeWidth: 10, r: 5 }} strokeWidth={2} />
                         </LineChart>
                     </article>
                 )
             case 'radar':
                 return (
-                    <RadarChart outerRadius={90} width={730} height={250} data={data}>
-                        <PolarGrid gridType='polygon' />
-                        {!isLoading ? <PolarAngleAxis dataKey="kind" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} /> : null}
-                        <PolarRadiusAxis angle={45} domain={[0, 150]} />
-                        {displayRadar}
-                    </RadarChart>
+                    <article className='radar-chart'>
+                        <RadarChart outerRadius={90} width={260} height={260} data={data}>
+                            <PolarGrid gridType='polygon' />
+                            {!isLoading ? <PolarAngleAxis dataKey="kind" tickLine={false} axisLine={false} tick={{ fontSize: 10, fill: '#fff' }} /> : null}
+                            <PolarRadiusAxis angle={45} domain={[0, 150]} tick={false} axisLine={false} />
+                            {displayRadar}
+                        </RadarChart>
+                    </article>
                 )
+            case 'pie':
+                return (!isLoading &&
+                    <article className='pie-chart'>
+                        <h3><span className='score'>{data[0].value}%</span> de votre objectif</h3>
+                        <PieChart width={260} height={260}>
+                            <Pie
+                                data={data}
+                                startAngle={210}
+                                endAngle={-150}
+                                innerRadius={60}
+                                outerRadius={80}
+                                cornerRadius={50}
+                                fill="#8884d8"
+                                dataKey="value"
+                            > </Pie>
+                        </PieChart> 
+                    </article>)
+
+
             default:
                 break;
         }

@@ -1,6 +1,7 @@
 h1 {
     font-size: $font-xxl;
     font-weight: bold;
+    
     span {
         color: $color-001;
     }
@@ -13,7 +14,10 @@ h2 {
 
 h3 {
     font-weight: bold;
-    font-size: $font-lrg;
+    font-size: $font-mdm;
+    @media screen and (min-width: $breakpoint) {
+        font-size: $font-lrg;
+    }
 }
 
 h4 {

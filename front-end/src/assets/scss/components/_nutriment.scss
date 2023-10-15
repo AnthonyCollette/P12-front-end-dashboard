@@ -1,11 +1,15 @@
 .nutriment {
     display: flex;
     align-items: center;
-    padding: 30px 50px 30px 30px;
+    padding: 20px 30px 20px 20px;
     background-color: $color-004;
     border-radius: 10px;
-    width: 200px;
+    width: 150px;
     margin-bottom: 40px;
+    @media screen and (min-width: $breakpoint) {
+        padding: 30px 50px 30px 30px;
+        width: 200px;
+    }
     &:last-of-type {
         margin-bottom: 0;
     }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Line, LineChart, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Line, LineChart, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, PieChart, Pie } from 'recharts';
 
 
 
@@ -9,6 +9,13 @@ const Chart = ({ typeOfChart, content }) => {
     const [isLoading, setIsLoading] = useState(true)
     const [YAxisMin, setYAxisMin] = useState(null)
     const [YAxisMax, setYAxisMax] = useState(null)
+    const legendBarChartStyle = () => {
+        if (window.clientWidth > 1200) {
+            return { top: "-50px", fontSize: "14px", fontWeight: 500 }
+        } else {
+            return { top: "-20px", fontSize: "14px", fontWeight: 500 }
+        }
+    }
 
     let allKg = []
 
@@ -17,7 +24,7 @@ const Chart = ({ typeOfChart, content }) => {
     useEffect(() => {
         if (typeOfChart === 'bar') {
             content.map((session, index) => {
-                setData(state => [...state, { name: index, day: session.day, kg: session.kilogram, Kcal: session.calories }])
+                setData(state => [...state, { name: index + 1, day: session.day, kg: session.kilogram, Kcal: session.calories }])
             })
         }
         if (typeOfChart === 'line') {
@@ -64,7 +71,7 @@ const Chart = ({ typeOfChart, content }) => {
                         break;
                 }
             }
-            content.data.map((session) => {
+            content.data.sort((a, b) => a.value - b.value).map((session) => {
                 setData(state => [...state, { value: session.value, kind: getKind(session.kind) }])
             })
         }
@@ -75,8 +82,8 @@ const Chart = ({ typeOfChart, content }) => {
             if (content.todayScore !== undefined) {
                 setData([{ value: content.todayScore * 100, fill: '#FF0101' }, { value: 100 - content.todayScore * 100, fill: '#FFFFFF' }])
             }
-            
-            
+
+
         }
     }, [])
 
@@ -89,7 +96,6 @@ const Chart = ({ typeOfChart, content }) => {
             allKg.sort((a, b) => a - b)
             setYAxisMin(allKg[0] - 1)
             setYAxisMax(allKg[allKg.length - 1])
-            setIsLoading(false)
         }
 
         if (typeOfChart === 'radar' && data.length > 0) {
@@ -103,25 +109,27 @@ const Chart = ({ typeOfChart, content }) => {
 
     }, [data])
 
+    useEffect(() => {
+        if (YAxisMin !== null && YAxisMax !== null) {
+            setIsLoading(false)
+        }
+    }, [YAxisMin, YAxisMax])
+
     const displayChart = (typeOfChart) => {
         switch (typeOfChart) {
             case 'bar':
                 return (
                     <article className='bar-chart'>
                         <h3>Activité quotidienne</h3>
-                        <ResponsiveContainer width="100%" height="80%">
-                            <BarChart
-                                data={data}
-
-                            >
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 20 }} >
                                 <CartesianGrid strokeDasharray="2" vertical={false} />
                                 <XAxis dataKey="name" tick={{ fill: '#9B9EAC', fontSize: '14px', fontWeight: 500 }} />
-                                {!isLoading && <YAxis orientation='right' interval={2} tick={{ fill: '#9B9EAC', fontSize: '14px', fontWeight: 500 }} domain={[YAxisMin, YAxisMax]} />}
+                                {!isLoading && <YAxis orientation='right' interval={1} tick={{ fill: '#9B9EAC', fontSize: '14px', fontWeight: 500 }} domain={[YAxisMin - 1, YAxisMax + 1]} />}
                                 <Tooltip content={<CustomTooltip />} />
-                                <Legend iconType='circle' verticalAlign='top' iconSize={8} wrapperStyle={{ top: "-50px", fontSize: "14px", fontWeight: 500 }} align='right' formatter={(value, entry, index) => <span className="grey-text">{value}</span>} />
+                                <Legend iconType='circle' verticalAlign='top' iconSize={8} wrapperStyle={legendBarChartStyle()} align='right' formatter={(value, entry, index) => <span className="grey-text">{value}</span>} />
                                 <Bar name='Poids (kg)' dataKey="kg" fill="#282D30" radius={[5, 5, 0, 0]} barSize={7} />
                                 <Bar name='Calories brûlées (kCal)' dataKey="Kcal" fill="#E60000" radius={[5, 5, 0, 0]} barSize={7} margin={{ top: 0, right: 4, bottom: 0, left: 4 }} />
-
                             </BarChart>
                         </ResponsiveContainer>
                     </article>
@@ -130,49 +138,56 @@ const Chart = ({ typeOfChart, content }) => {
                 return (
                     <article className='line-chart'>
                         <h3>Durée moyenne des sessions</h3>
-                        <LineChart width={260} height={160} data={data} margin={{ top: 20, right: 20, left: 20, bottom: 0 }} onMouseMove={(e) => {
-                            if (e.isTooltipActive === true) {
-                                let windowWidth = document.querySelector('.line-chart').clientWidth
-                                let mouseXpercentage = Math.round(
-                                    (e.activeCoordinate.x / windowWidth) * 100
-                                )
-                                document.querySelector('.line-chart').style.background = `linear-gradient(90deg, rgba(255,0,0,1) ${mouseXpercentage}%, rgba(200,0,0,1.5) ${mouseXpercentage}%, rgba(200,0,0,1.5) 100%)`
-                            }
-                        }}>
-                            <XAxis dataKey="name" tick={{ fontSize: "12px", fontWeight: 500, fill: "#fff" }} tickLine={false} axisLine={false} />
-                            <YAxis hide />
-                            <Tooltip content={<CustomTooltip />} />
-                            <Line type="monotone" dataKey="min" stroke="#fff" dot={false} activeDot={{ stroke: "rgba(255,255,255, 0.6)", strokeWidth: 10, r: 5 }} strokeWidth={2} />
-                        </LineChart>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={data} margin={{ top: 80, right: 20, left: 20, bottom: 10 }} onMouseMove={(e) => {
+                                if (e.isTooltipActive === true) {
+                                    let windowWidth = document.querySelector('.line-chart').clientWidth
+                                    let mouseXpercentage = Math.round(
+                                        (e.activeCoordinate.x / windowWidth) * 100
+                                    )
+                                    document.querySelector('.line-chart').style.background = `linear-gradient(90deg, rgba(255,0,0,1) ${mouseXpercentage}%, rgba(200,0,0,1.5) ${mouseXpercentage}%, rgba(200,0,0,1.5) 100%)`
+                                }
+                            }}>
+                                <XAxis dataKey="name" tick={{ fontSize: "12px", fontWeight: 500, fill: "#fff" }} tickLine={false} axisLine={false} />
+                                <YAxis hide />
+                                <Tooltip content={<CustomTooltip />} />
+                                <Line type="monotone" dataKey="min" stroke="#fff" dot={false} activeDot={{ stroke: "rgba(255,255,255, 0.6)", strokeWidth: 10, r: 5 }} strokeWidth={2} />
+                            </LineChart>
+                        </ResponsiveContainer>
                     </article>
                 )
             case 'radar':
                 return (
                     <article className='radar-chart'>
-                        <RadarChart outerRadius={90} width={260} height={260} data={data}>
-                            <PolarGrid gridType='polygon' />
-                            {!isLoading ? <PolarAngleAxis dataKey="kind" tickLine={false} axisLine={false} tick={{ fontSize: 10, fill: '#fff' }} /> : null}
-                            <PolarRadiusAxis angle={45} domain={[0, 150]} tick={false} axisLine={false} />
-                            {displayRadar}
-                        </RadarChart>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <RadarChart outerRadius={70} data={data}>
+                                <PolarGrid gridType='polygon' radialLines={false} polarRadius={[0, 10, 20, 40, 60, 80]} />
+                                {!isLoading ? <><PolarAngleAxis dataKey="kind" tickLine={false} axisLine={false} tick={{ fontSize: 10, fill: '#fff' }} />
+                                    <PolarRadiusAxis angle={45} domain={[0, data[data.length - 1].value + 50]} tick={false} axisLine={false} /> </> : null}
+
+                                {displayRadar}
+                            </RadarChart>
+                        </ResponsiveContainer>
                     </article>
                 )
             case 'pie':
                 return (!isLoading &&
                     <article className='pie-chart'>
                         <h3><span className='score'>{data[0].value}%</span> de votre objectif</h3>
-                        <PieChart width={260} height={260}>
-                            <Pie
-                                data={data}
-                                startAngle={210}
-                                endAngle={-150}
-                                innerRadius={60}
-                                outerRadius={80}
-                                cornerRadius={50}
-                                fill="#8884d8"
-                                dataKey="value"
-                            > </Pie>
-                        </PieChart> 
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={data}
+                                    startAngle={210}
+                                    endAngle={-150}
+                                    innerRadius={60}
+                                    outerRadius={80}
+                                    cornerRadius={50}
+                                    fill="#8884d8"
+                                    dataKey="value"
+                                > </Pie>
+                            </PieChart>
+                        </ResponsiveContainer>
                     </article>)
 
 

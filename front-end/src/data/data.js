@@ -6,7 +6,7 @@ const USER_MAIN_DATA = [
             lastName: 'Mocked',
             age: 31,
         },
-        todayScore: 0.12,
+        todayScore: 0.98,
         keyData: {
             calorieCount: 1930,
             proteinCount: 155,

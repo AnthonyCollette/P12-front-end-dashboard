@@ -36,6 +36,7 @@ const Homepage = ({ mocked }) => {
     const [userData, setUserData] = useState(null)
     const [loading, setLoading] = useState(true)
 
+
     useEffect(() => {
         if (mocked) {
             setData(mockedData)
@@ -48,16 +49,19 @@ const Homepage = ({ mocked }) => {
             const activity = data.USER_ACTIVITY.find(user => user.userId == id)
             const averageSessions = data.USER_AVERAGE_SESSIONS.find(user => user.userId == id)
             const performance = data.USER_PERFORMANCE.find(user => user.userId == id)
-            setUserData({mainData, activity, averageSessions, performance})
+            setUserData({ mainData, activity, averageSessions, performance })
         }
     }, [data])
 
     useEffect(() => {
-        if (userData !== null && userData!== undefined) {
-            console.log(userData)
+        if (userData !== null && userData !== undefined) {
             setLoading(false)
         }
     }, [userData])
+
+    let displayHi = () => {
+        return null
+    }
 
     return (
         <div className='homepage'>
@@ -67,11 +71,13 @@ const Homepage = ({ mocked }) => {
                 {!loading && <h1>Bonjour <span>{userData?.mainData?.userInfos?.firstName}</span></h1>}
                 <h2>Félicitation ! Vous avez explosé vos objectifs hier 👏</h2>
                 <div className='row'>
-                    <div className='charts'>
-                        {!loading && <Chart typeOfChart='bar' sessions={userData?.activity?.sessions} />}
-                    </div>
+                    {!loading && <section className='charts'>
+                        <Chart typeOfChart='bar' sessions={userData?.activity?.sessions} />
+                        <Chart typeOfChart="line" sessions={userData?.averageSessions?.sessions} />
+                        <Chart typeOfChart="radar" sessions={userData?.performance} />
+                    </section>}
                     <section className='nutriments'>
-                        {!loading &&  Object.entries(userData?.mainData?.keyData).map(([key, value], index) => {
+                        {!loading && Object.entries(userData?.mainData?.keyData).map(([key, value], index) => {
                             return <Nutriments key={index} index={index} label={key} value={value} />
                         })}
                     </section>

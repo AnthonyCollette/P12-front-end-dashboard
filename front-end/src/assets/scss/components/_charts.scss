@@ -30,4 +30,29 @@
     .grey-text {
         color: $color-005;
     }
+
+    .line-chart {
+        background-color: $color-001;
+        width: fit-content;
+        padding: 80px 0 20px;
+        position: relative;
+        border-radius: 10px;
+
+        h3 {
+            position: absolute;
+            left: 30px;
+            top: 30px;
+            color: $color-003;
+            font-size: $font-md;
+            max-width: 60%;
+            line-height: 24px;
+        }
+    }
+    .custom-tooltip__length {
+        background-color: $color-003;
+        color: $color-002;
+        font-size: $font-xs;
+        font-weight: 500;
+        padding: 10px;
+    }
 }

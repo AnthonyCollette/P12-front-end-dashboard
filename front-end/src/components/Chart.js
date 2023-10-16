@@ -164,7 +164,6 @@ const Chart = ({ typeOfChart, content }) => {
                                 <PolarGrid gridType='polygon' radialLines={false} polarRadius={[0, 10, 20, 40, 60, 80]} />
                                 {!isLoading ? <><PolarAngleAxis dataKey="kind" tickLine={false} axisLine={false} tick={{ fontSize: 10, fill: '#fff' }} />
                                     <PolarRadiusAxis angle={45} domain={[0, data[data.length - 1].value + 50]} tick={false} axisLine={false} /> </> : null}
-
                                 {displayRadar}
                             </RadarChart>
                         </ResponsiveContainer>

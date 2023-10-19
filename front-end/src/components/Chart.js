@@ -181,7 +181,7 @@ const Chart = ({ typeOfChart, content }) => {
                                     data={data}
                                     startAngle={210}
                                     endAngle={-150}
-                                    innerRadius={60}
+                                    innerRadius={70}
                                     outerRadius={80}
                                     cornerRadius={50}
                                     fill="#8884d8"

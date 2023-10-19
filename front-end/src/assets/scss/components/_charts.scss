@@ -1,7 +1,12 @@
 .charts {
     width: fit-content;
-    margin-right: 60px;
-    max-width: 60%;
+    margin-right: 10px;
+    max-width: 80%;
+
+    @media screen and (min-width: $breakpoint) {
+        margin-right: 60px;
+        max-width: 60%;
+    }
 
     .upper-chart {
         
@@ -45,8 +50,11 @@
         margin-top: 30px;
 
         > article {
-            width: 31%;
+            width: 33%;
             aspect-ratio: 1;
+            @media screen and (min-width: $breakpoint) {
+                width: 31%;
+            }
         }
 
         .line-chart {
@@ -100,6 +108,9 @@
                 font-size: $font-mdm;
                 width: 95px;
                 line-height: 26px;
+                background-color: $color-003;
+                border-radius: 50%;
+                padding: 20px;
                 span {
                     display: block;
                     color: $color-007;

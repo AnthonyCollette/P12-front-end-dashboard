@@ -8,8 +8,8 @@ a {
 }
 
 .container {
-    padding: 20px 20px 20px 130px;
-    @media screen and (min-width: 1200px) {
+    padding: 20px 20px 20px 90px;
+    @media screen and (min-width: $breakpoint) {
         padding: 70px 90px 90px 225px;
     }
 }

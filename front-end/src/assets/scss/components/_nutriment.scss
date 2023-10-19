@@ -1,10 +1,10 @@
 .nutriment {
     display: flex;
     align-items: center;
-    padding: 15px 30px 15px 20px;
+    padding: 15px 10px 15px;
     background-color: $color-004;
     border-radius: 10px;
-    width: 150px;
+    width: 140px;
     margin-bottom: 20px;
     @media screen and (min-width: $breakpoint) {
         padding: 30px 50px 30px 30px;
@@ -19,7 +19,10 @@
         border-radius: 10px;
     }
     &__text {
-        margin-left: 25px;
+        margin-left: 10px;
+        @media screen and (min-width: $breakpoint) {
+            margin-left: 25px; 
+        }
     }
     &--red {
         .nutriment__image {

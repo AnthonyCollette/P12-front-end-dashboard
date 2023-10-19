@@ -2,7 +2,7 @@ aside {
     background-color: $color-002;
     position: fixed;
     height: 100vh;
-    width: 120px;
+    width: 80px;
     left: 0;
     top: 0;
     z-index: 998;
@@ -10,6 +10,10 @@ aside {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
+    @media screen and (min-width: $breakpoint) {
+        width: 120px;
+    }
 
     p {
         color: $color-003;

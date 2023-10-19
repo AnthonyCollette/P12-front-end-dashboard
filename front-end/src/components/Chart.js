@@ -18,6 +18,7 @@ const Chart = ({ typeOfChart, content }) => {
     }
 
     let allKg = []
+    let allKcal = []
 
     let displayRadar = <Radar dataKey='value' stroke='#FF0101' fill='#FF0101' fillOpacity={0.7} />
 
@@ -92,10 +93,11 @@ const Chart = ({ typeOfChart, content }) => {
         if (typeOfChart === 'bar') {
             content.map((session) => {
                 allKg.push(session.kilogram)
+                allKcal.push(session.calories)
             })
             allKg.sort((a, b) => a - b)
-            setYAxisMin(allKg[0] - 1)
-            setYAxisMax(allKg[allKg.length - 1])
+            setYAxisMin(allKg[0])
+            setYAxisMax(allKcal[allKcal.length - 1])
         }
 
         if (typeOfChart === 'radar' && data.length > 0) {
@@ -123,9 +125,9 @@ const Chart = ({ typeOfChart, content }) => {
                         <h3>Activité quotidienne</h3>
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 20 }} >
-                                <CartesianGrid strokeDasharray="2" vertical={false} />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                 <XAxis dataKey="name" tick={{ fill: '#9B9EAC', fontSize: '14px', fontWeight: 500 }} />
-                                {!isLoading && <YAxis orientation='right' interval={1} tick={{ fill: '#9B9EAC', fontSize: '14px', fontWeight: 500 }} domain={[YAxisMin - 1, YAxisMax + 1]} />}
+                                {!isLoading && <YAxis orientation='right' tickCount={4} tick={{ fill: '#9B9EAC', fontSize: '14px', fontWeight: 500 }} domain={[YAxisMin - 10, YAxisMax + 10]} />}
                                 <Tooltip content={<CustomTooltip />} />
                                 <Legend iconType='circle' verticalAlign='top' iconSize={8} wrapperStyle={legendBarChartStyle()} align='right' formatter={(value, entry, index) => <span className="grey-text">{value}</span>} />
                                 <Bar name='Poids (kg)' dataKey="kg" fill="#282D30" radius={[5, 5, 0, 0]} barSize={7} />
@@ -160,7 +162,7 @@ const Chart = ({ typeOfChart, content }) => {
                 return (
                     <article className='radar-chart'>
                         <ResponsiveContainer width="100%" height="100%">
-                            <RadarChart outerRadius={70} data={data}>
+                            <RadarChart outerRadius={80} data={data}>
                                 <PolarGrid gridType='polygon' radialLines={false} polarRadius={[0, 10, 20, 40, 60, 80]} />
                                 {!isLoading ? <><PolarAngleAxis dataKey="kind" tickLine={false} axisLine={false} tick={{ fontSize: 10, fill: '#fff' }} />
                                     <PolarRadiusAxis angle={45} domain={[0, data[data.length - 1].value + 50]} tick={false} axisLine={false} /> </> : null}

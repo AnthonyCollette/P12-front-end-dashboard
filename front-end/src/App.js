@@ -15,6 +15,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Homepage mocked={mocked} setMocked={setMocked} />} />
           <Route path='/user/:id' element={<Dashboard mocked={mocked} />} />
+          <Route path='*' element={<Homepage mocked={mocked} setMocked={setMocked} />} />
         </Routes>
       </BrowserRouter>
     </div>
